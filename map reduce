@@ -1,0 +1,60 @@
+ASSIGNMENT NO:11
+/*PROBLEMSTATEMENT:MongoDB – Map-reduces operations: Implement Map reduces operation with suitable example using MongoDB.*/
+gescoe@gescoe-OptiPlex-3010:~$ mongo MongoDB shell version: 2.6.12 connecting to: test
+> use TEB_41; switched to db TEB_41
+> db.Record.insert({"Branch":"Computer","Marks":950,"Division":"B"}); WriteResult({ "nInserted" : 1 })
+> db.Record.insert({"Branch":"Computer","Marks":700,"Division":"B"});
+WriteResult({ "nInserted" : 1 })
+> db.Record.insert({"Branch":"AIDS","Marks":820,"Division":"A"}); WriteResult({ "nInserted" : 1 })
+> db.Record.insert({"Branch":"AIDS","Marks":650,"Division":"B"});
+WriteResult({ "nInserted" : 1 })
+> db.Record.find().pretty();
+{
+"_id" : ObjectId("66f12b91e8870de812a53430"),
+"Branch" : "Computer",
+"Marks" : 950,
+"Division" : "B"
+}
+{
+"_id" : ObjectId("66f12bb4e8870de812a53431"),
+"Branch" : "Computer",
+"Marks" : 700,
+"Division" : "B"
+}
+{
+"_id" : ObjectId("66f12bcce8870de812a53432"),
+"Branch" : "AIDS",
+"Marks" : 820,
+"Division" : "A"
+}
+{
+"_id" : ObjectId("66f12be8e8870de812a53433"),
+"Branch" : "AIDS",
+"Marks" : 650,
+"Division" : "B"
+}
+> db.Record.mapReduce(function(){emit(this.Branch, this.Marks);},
+... function(key, values) {return Array.sum( values)},
+... { query : {Division : "B"}, out : "Total_marks"
+... }
+... );
+{
+"result" : "Total_marks",
+"timeMillis" : 87,
+"counts" : {
+"input" : 3,
+"emit" : 3,
+"reduce" : 1,
+"output" : 2
+},
+"ok" : 1
+}
+> show collections;
+Record
+Student
+Total_marks
+System.indexes
+> db.Total_marks.find().pretty();
+{ "_id" : "AIDS", "value" : 650 }
+{ "_id" : "Computer", "value" : 1650 }
+>
