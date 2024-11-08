@@ -1,0 +1,114 @@
+Write a PL/SQL block of code using parameterized Cursor that will merge the data available in the newly created table N_Roll Call with the data available in the table O_RollCall. If the data in the first table already exist in the second table then that data should be skipped.
+
+gescoe@gescoe-OptiPlex-3010:~$ mysql -h 192.168.2.232 -u TEB41 -p Enter password:
+MySQL [(none)]> create database TEB_41;
+Query OK, 1 row affected (0.001 sec)
+MySQL [(none)]> use TEB_41;
+Database changed
+MySQL [TEB_41]> create table N_RollCall(rollno int,name char(20)); Query OK, 0 rows affected (0.281 sec)
+MySQL [TEB_41]> create table O_RollCall(rollno int,name char(20));
+Query OK, 0 rows affected (0.299 sec)
+MySQL [TEB_41]> insert into O_RollCall
+values(1,'Pranjal'),(2,'Punam'),(3,'Harshali'),(4,'Sayali');
+Query OK, 4 rows affected (0.041 sec)
+Records: 4 Duplicates: 0 Warnings: 0
+MySQL [TEB_41]> insert into N_RollCall
+values(1,'Pranjal'),(5,'Omkar'),(3,'Harshali'),(6,'Gaurav');
+Query OK, 4 rows affected (0.048 sec)
+Records: 4 Duplicates: 0 Warnings: 0
+MySQL [TEB_41]> drop procedure if exists mycursor1;
+Query OK, 0 rows affected, 1 warning (0.000 sec)
+MySQL [TEB_41]>
+MySQL [TEB_41]> delimiter //
+MySQL [TEB_41]>
+MySQL [TEB_41]> CREATE PROCEDURE mycursor1()
+-> BEGIN
+	->	DECLARE done INT DEFAULT 0;
+	->	DECLARE c_rollno int;
+	->	DECLARE c_name char(20);
+->
+	->	DECLARE c_studentN CURSOR for SELECT rollno,name FROM O_RollCall
+where rollno not in(select rollno from N_RollCall);
+->
+	->	DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+->
+	->	BEGIN
+	->	OPEN c_studentN;
+	->	read_loop:LOOP
+	->	FETCH c_studentN into c_rollno, c_name;
+->
+	->	IF done = 1 THEN
+	->	LEAVE read_loop;
+	->	END IF;
+->
+	->	insert into N_RollCall(rollno,name) values(c_rollno, c_name);
+->
+	->	END LOOP;
+	->	CLOSE c_studentN;
+	->	END;
+-> END;
+->
+-> //
+Query OK, 0 rows affected (0.009 sec)
+MySQL [TEB_41]>
+MySQL [TEB_41]> delimiter ;
+MySQL [TEB_41]> call mycursor1;
+Query OK, 0 rows affected (0.094 sec)
+MySQL [TEB_41]> select * from N_RollCall;
++--------+----------+ | rollno | name |
++--------+----------+
+|	1 | Pranjal |
+|	5 | Omkar |
+| 3 | Harshali | | 6 | Gaurav | | 2 | Punam | | 4 | Sayali |
++--------+----------+
+
+
+
+-------------------------------------------------------
+--------------------------------------------------
+
+PL SQL Code :
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+drop procedure if exists mycursor1;
+
+delimiter //
+
+CREATE PROCEDURE mycursor1()
+BEGIN
+    DECLARE done INT DEFAULT 0;
+    DECLARE  c_rollno int;
+    DECLARE  c_name char(20);
+
+    DECLARE  c_studentN CURSOR  for SELECT rollno,name FROM O_RollCall where rollno not in(select rollno from N_RollCall);
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+    BEGIN
+        OPEN c_studentN;
+           read_loop:LOOP
+               FETCH c_studentN into c_rollno, c_name;  
+   
+               IF done = 1 THEN
+                  LEAVE read_loop;
+               END IF;          
+   
+              insert into N_RollCall(rollno,name) values(c_rollno, c_name);
+
+           END LOOP;
+           CLOSE c_studentN;
+    END;
+END;
+
+//
+
+delimiter ;
+
+
+
+
+
+
+
+
+      
