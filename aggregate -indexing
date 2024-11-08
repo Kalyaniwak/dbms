@@ -1,0 +1,134 @@
+/*PROBLEM STATEMENT:MongoDB – Aggregation and Indexing: Design and Develop MongoDB Queries using aggregation and indexing with suitable example using MongoDB*/
+gescoe@gescoe-OptiPlex-3010:~$ mongo MongoDB shell version: 2.6.12 connecting to: test
+> use TEB_41; switched to db TEB_41
+> db.Student.insert({"Rollno":4,"Name":"Gauri","Branch":"Computer","Marks":85});
+WriteResult({ "nInserted" : 1 })
+> db.Student.find().pretty();
+{
+"_id" : ObjectId("66c5c039f69f7a64bf57360b"),
+"Rollno" : 1,
+"Name" : "Saee",
+"Branch" : "Computer",
+"Marks" : 95
+}
+{
+"_id" : ObjectId("66c5c05af69f7a64bf57360c"),
+"Rollno" : 2,
+"Name" : "Sayali",
+"Branch" : "IT",
+"Marks" : 75
+}
+{
+"_id" : ObjectId("66c5c0a1f69f7a64bf57360e"),
+"Branch" : "AIDS",
+"Marks" : 80
+}
+{
+"_id" : ObjectId("66c5cab76de7af48add9b83b"),
+"Rollno" : 4,
+"Name" : "Gauri",
+"Branch" : "Computer",
+"Marks" : 85
+}
+> db.Student.aggregate([{$group:{_id:"$Branch",Total_marks:{$sum:"$Marks"}}}]);
+{ "_id" : "AIDS", "Total_marks" : 80 }
+{ "_id" : "IT", "Total_marks" : 75 }
+{ "_id" : "Computer", "Total_marks" : 180 }
+> db.Student.aggregate([{$group:{_id:"$Branch",Maximum_marks:{$max:"$Marks"}}}]);
+{ "_id" : "AIDS", "Maximum_marks" : 80 }
+{ "_id" : "IT", "Maximum_marks" : 75 }
+{ "_id" : "Computer", "Maximum_marks" : 95 }
+> db.Student.aggregate([{$group:{_id:"$Branch",Minimum_marks:{$min:"$Marks"}}}]);
+{ "_id" : "AIDS", "Minimum_marks" : 80 }
+{ "_id" : "IT", "Minimum_marks" : 75 }
+{ "_id" : "Computer", "Minimum_marks" : 85 }
+> db.Student.aggregate([{$group:{_id:"$Branch",Average_marks:{$avg:"$Marks"}}}]);
+{ "_id" : "AIDS", "Average_marks" : 80 }
+{ "_id" : "IT", "Average_marks" : 75 }
+{ "_id" : "Computer", "Average_marks" : 90 }
+> db.Student.aggregate([{$group:{_id:"$Branch",First_marks:{$first:"$Marks"}}}]);
+{ "_id" : "AIDS", "First_marks" : 80 }
+{ "_id" : "IT", "First_marks" : 75 }
+{ "_id" : "Computer", "First_marks" : 95 }
+> db.Student.aggregate([{$group:{_id:"$Branch",Last_marks:{$last:"$Marks"}}}]);
+{ "_id" : "AIDS", "Last_marks" : 80 }
+{ "_id" : "IT", "Last_marks" : 75 }
+{ "_id" : "Computer", "Last_marks" : 85 }
+>
+--------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------
+student@student-OptiPlex-3050:~$ mongo 
+MongoDB shell version v4.4.29 connecting 
+to:  
+mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb 
+Implicit session: session { "id" : UUID("bbd5b46b-e560-4cc0-bbe9-9afac4075cc2") } 
+MongoDB server version: 4.4.29  ---  
+The server generated these startup warnings when booting:   
+2024-10-15T13:13:44.228+05:30: Using the XFS filesystem is strongly recommended with 
+the WiredTiger storage engine. See http://dochub.mongodb.org/core/prodnotes-filesystem         
+2024-10-15T13:13:46.185+05:30: Access control is not enabled for the database. Read and write 
+access to data and configuration is unrestricted ---  
+> use TEA13; switched 
+to db TEA13  
+> db.createCollection("Student") { 
+"ok" : 1 }  
+> db.Student.insertMany([{Name: "Shravani", RollNo: 13, Marks: 89, Branch:  
+"Computer"},{Name: "Tony", RollNo: 29, Marks: 99, Branch: "Computer"},{Name:  
+"Yoga",RollNo: 43, Marks: 100, Branch: "Computer"},{Name: "Maggi", RollNo: 17, Marks: 95,  
+Branch: "Computer"},{Name: "Suniyo", RollNo: 67, Marks: 87, Branch: "IT"},{Name: "Payal", 
+RollNo: 56, Marks: 68, Branch: "IT"}])  
+{  
+"acknowledged" : true,  
+"insertedIds" : [  
+ObjectId("670e24b8d60c5959bc91004c"),  
+ObjectId("670e24b8d60c5959bc91004d"),  
+ObjectId("670e24b8d60c5959bc91004e"),  
+ObjectId("670e24b8d60c5959bc91004f"),  
+ObjectId("670e24b8d60c5959bc910050"),  
+ObjectId("670e24b8d60c5959bc910051")  
+]  
+}  
+> db.Student.aggregate([{$group : {_id : "$Branch", Total_sum : {$sum : "$Marks"}}}])  
+{ "_id" : "Computer", "Total_sum" : 383 }  
+{ "_id" : "IT", "Total_sum" : 155 }  
+> db.Student.aggregate([{$group : {_id : "$Branch", Max_marks : {$max : "$Marks"}}}])  
+{ "_id" : "Computer", "Max_marks" : 100 }  
+{ "_id" : "IT", "Max_marks" : 87 }  
+> db.Student.aggregate([{$group : {_id : "$Branch", Min_marks : {$min : "$Marks"}}}])  
+{ "_id" : "Computer", "Min_marks" : 89 }  
+{ "_id" : "IT", "Min_marks" : 68 }  
+> db.Student.aggregate([{$group : {_id : "$Branch", Avg_marks : {$avg : "$Marks"}}}])  
+{ "_id" : "Computer", "Avg_marks" : 95.75 }  
+{ "_id" : "IT", "Avg_marks" : 77.5 }  
+> db.Student.createIndex({"title":1,"description":-1})  
+{  
+"createdCollectionAutomatically" : false,  
+"numIndexesBefore" : 1,  
+"numIndexesAfter" : 2,  
+"ok" : 1  
+}  
+> db.Student.getIndexes()  
+[  
+{  
+"v" : 2,  
+"key" : {  
+"_id" : 1  
+},  
+"name" : "_id_"  
+},  
+{  
+"v" : 2,  
+"key" : {  
+"title" : 1,  
+"description" : -1  
+},  
+"name" : "title_1_description_-1"  
+}  
+]  
+> db.Student.dropIndexes()  
+{  
+"nIndexesWas" : 2,  
+"msg" : "non-_id indexes dropped for collection",  
+"ok" : 1  
+}
