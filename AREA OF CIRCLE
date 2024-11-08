@@ -1,0 +1,104 @@
+ASSIGNMENT NO:5
+Write a PL/SQL code block to calculate the area of a circle for a value of radius varying from 5 to 9. Store the radius and the corresponding values of calculated area in an empty table named areas, consisting of two columns, radius and area.
+gescoe@gescoe-OptiPlex-3010:~$ mysql -h 192.168.2.232 -u TEB41 -p Enter password:
+MySQL [(none)]> create database pranjal;
+Query OK, 1 row affected (0.001 sec)
+MySQL [(none)]> use pranjal;
+Database changed
+MySQL [pranjal]> create table tbl_area(radius int,area float); Query OK, 0 rows affected (0.351 sec)
+MySQL [pranjal]>
+MySQL [pranjal]> delimiter //
+MySQL [pranjal]>
+MySQL [pranjal]> create procedure Find_Circle_Area()
+-> BEGIN
+-> declare r int;
+-> declare a float;
+->
+-> set r = 5;
+	->	loop_label: LOOP
+	->	IF r > 9 THEN
+	->	LEAVE loop_label;
+	->	END IF;
+->
+	->	set a = 3.14 * r * r;
+	->	insert into tbl_area(radius,area) values(r,a);
+->
+	->	select a as Area;
+->
+	->	set r = r + 1;
+->
+	->	END LOOP;
+->
+-> END;
+->
+-> //
+Query OK, 0 rows affected (0.001 sec)
+MySQL [pranjal]>
+MySQL [pranjal]> delimiter ;
+MySQL [pranjal]> call Find_Circle_Area();
++------+
+| Area |
++------+
+| 78.5 |
++------+
+1 row in set (0.052 sec)
++--------+
+| Area	|
++--------+
+| 113.04 |
++--------+
+1 row in set (0.094 sec)
++--------+
+| Area	|
++--------+
+| 153.86 |
++--------+
+1 row in set (0.219 sec)
++--------+
+| Area	|
++--------+
+| 200.96 |
++--------+
+1 row in set (0.261 sec)
++--------+
+| Area	|
++--------+
+| 254.34 |
++--------+
+1 row in set (0.303 sec)
+Query OK, 0 rows affected (0.303 sec)
+
+
+---------------------------------------------------------------
+---------------------
+
+PL CODE:
+--------------------------------------------------------
+
+drop procedure if exists Find_Circle_Area;
+
+delimiter //
+ 
+create procedure Find_Circle_Area()
+BEGIN
+declare r int;
+declare a float;
+
+set r = 5;
+    loop_label:  LOOP
+        IF  r > 9 THEN
+            LEAVE  loop_label;
+        END  IF;
+           
+        set a = 3.14 * r * r;
+           insert into tbl_area(radius,area) values(r,a);
+           
+           set r = r + 1;
+       
+    END LOOP;
+
+END;
+ 
+ //
+
+delimiter ;
