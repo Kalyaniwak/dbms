@@ -1,0 +1,160 @@
+DesignandDevelopMongoDBQueriesusingCRUDoperations.(UseCRUDoperations, SAVE method, logical operators etc.).*/
+gescoe@gescoe-OptiPlex-3010:~$ mongo MongoDB shell version: 2.6.12 connecting to: 
+
+> use TEB_41; switched to db TEB_41
+> db.createCollection("Student");
+{ "ok" : 1}
+> db.Student.insert({"Rollno":1,"Name":"Saee","Branch":"Computer","Marks":95});
+WriteResult({ "nInserted" : 1 })
+> db.Student.insert({"Rollno":2,"Name":"Sayali","Branch":"IT","Marks":75});
+WriteResult({ "nInserted" : 1 })
+> db.Student.insert({"Rollno":3,"Name":"Gauri","Branch":"Mechanical","Marks":82});
+WriteResult({ "nInserted" : 1 })
+> db.Student.insert({"Rollno":4,"Name":"Jayesh","Branch":"Computer","Marks":60});
+WriteResult({ "nInserted" : 1 })
+> db.Student.find().pretty();
+{
+"_id" : ObjectId("66c5c039f69f7a64bf57360b"),
+"Rollno" : 1,
+"Name" : "Saee",
+"Branch" : "Computer",
+"Marks" : 95
+}
+{
+"_id" : ObjectId("66c5c05af69f7a64bf57360c"),
+"Rollno" : 2,
+"Name" : "Sayali",
+"Branch" : "IT",
+"Marks" : 75
+}
+{
+"_id" : ObjectId("66c5c07df69f7a64bf57360d"),
+	"Rollno"	3,
+"Name" : "Gauri",
+"Branch" : "Mechanical",
+"Marks" : 82
+}
+{
+"_id" : ObjectId("66c5c0a1f69f7a64bf57360e"),
+"Rollno" : 4,
+"Name" : "Jayesh",
+"Branch" : "Computer",
+"Marks" : 60
+}
+> db.Student.update({"Name":"Jayesh"},{$set:{"Name":"Shau"}});
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+> db.Student.find().pretty();
+{
+"_id" : ObjectId("66c5c039f69f7a64bf57360b"),
+"Rollno" : 1,
+"Name" : "Saee",
+"Branch" : "Computer",
+"Marks" : 95
+}
+{
+"_id" : ObjectId("66c5c05af69f7a64bf57360c"),
+"Rollno" : 2,
+"Name" : "Sayali",
+"Branch" : "IT",
+"Marks" : 75
+}
+{
+"_id" : ObjectId("66c5c07df69f7a64bf57360d"),
+"Rollno" : 3,
+"Name" : "Gauri",
+"Branch" : "Mechanical",
+"Marks" : 82
+}
+{
+"_id" : ObjectId("66c5c0a1f69f7a64bf57360e"),
+"Rollno" : 4,
+"Name" : "Shau",
+	"Branch"	"Computer",
+"Marks" : 60
+}
+> db.Student.remove({"Rollno":3});
+WriteResult({ "nRemoved" : 1 })
+> db.Student.find().pretty();
+{
+"_id" : ObjectId("66c5c039f69f7a64bf57360b"),
+"Rollno" : 1,
+"Name" : "Saee",
+"Branch" : "Computer",
+"Marks" : 95
+}
+{
+"_id" : ObjectId("66c5c05af69f7a64bf57360c"),
+"Rollno" : 2,
+"Name" : "Sayali",
+"Branch" : "IT",
+"Marks" : 75
+}
+{
+"_id" : ObjectId("66c5c0a1f69f7a64bf57360e"),
+"Rollno" : 4,
+"Name" : "Shau",
+"Branch" : "Computer",
+"Marks" : 60
+}
+> db.Student.save({"_id" :
+ObjectId("66c5c0a1f69f7a64bf57360e"),"Branch":"AIDS","Marks":80});
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+> db.Student.find().pretty();
+{
+"_id" : ObjectId("66c5c039f69f7a64bf57360b"),
+"Rollno" : 1,
+"Name" : "Saee",
+"Branch" : "Computer",
+"Marks" : 95
+}
+{
+"_id" : ObjectId("66c5c05af69f7a64bf57360c"),
+	"Rollno"	2,
+"Name" : "Sayali",
+"Branch" : "IT",
+ 
+"Marks" : 75
+}
+{
+"_id" : ObjectId("66c5c0a1f69f7a64bf57360e"),
+"Branch" : "AIDS",
+"Marks" : 80
+}
+> db.Student.find({$and:[{"Branch":"Computer"},{"Marks":95}]}).preety();
+{
+"_id" : ObjectId("66c5c039f69f7a64bf57360b"),
+"Rollno" : 1,
+"Name" : "Saee",
+"Branch" : "Computer",
+"Marks" : 95
+}
+> db.Student.find({$or:[{"Branch":"Computer"},{"Marks":75}]}).preety();
+{
+"_id" : ObjectId("66c5c039f69f7a64bf57360b"),
+"Rollno" : 1,
+"Name" : "Saee",
+"Branch" : "Computer",
+"Marks" : 95
+}
+{
+"_id" : ObjectId("66c5c05af69f7a64bf57360c"),
+"Rollno" : 2,
+"Name" : "Sayali",
+"Branch" : "IT",
+"Marks" : 75
+}
+> db.Student.find({$nor:[{"Branch":"Computer"},{"Marks":75}]}).preety();
+{
+"_id" : ObjectId("66c5c0a1f69f7a64bf57360e"),
+"Branch" : "AIDS",
+"Marks" : 80
+}
+> db.Student.find({$and:[{"Branch":"Computer"},{"Marks":{$gt:90}}]}).preety();
+{
+"_id" : ObjectId("66c5c039f69f7a64bf57360b"),
+"Rollno" : 1,
+"Name" : "Saee",
+"Branch" : "Computer",
+"Marks" : 95
+}
+>
