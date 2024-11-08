@@ -1,0 +1,166 @@
+ASSIGNMENT NO-4
+Unnamed PL/SQLcode block: Use of Control structure and Exception handling is After submitting the book, status will change from I to R. • If condition of fine is true, then details will be stored into fine table. 
+• Also handles the exception by named exception handler or user define exception handler. mandatory. Suggested Problem statement: Consider Tables: 1.
+Borrower(Roll_no, Name, Date of Issue, Name of Book, Status) 2. Fine(Roll_no, Date, Amt) •
+Accept Roll_no and Name of Book from user. • Check the number of days (from date of issue). • If days are between 15 to 30 then fine amount will be Rs 5per day. • If no. of days>30, per day fine will be Rs 50 per day and for days less than 30, Rs. 5 per day.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+gescoe@gescoe-OptiPlex-3010:~$ mysql -h 192.168.2.232 -u TEB41 -p 
+Enter password:
+
+MySQL [(none)]> create database pranjal;
+Query OK, 1 row affected (0.001 sec)
+MySQL [(none)]> use pranjal;
+Database changed
+MySQL [pranjal]> create table Fine(Roll_no int,sDate date,Amt int);
+Query OK, 0 rows affected (0.310 sec)
+MySQL [pranjal]> create table Borrower(Roll_no int,name varchar(20),DateofIssue date,bname varchar(20),status char);
+Query OK, 0 rows affected (0.279 sec)
+MySQL [pranjal]> desc Borrower;
++-------------+-------------+------+-----+---------+-------+
+| Field	| Type	| Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| Roll_no	| int(11)	| YES |	| NULL	|	|
+| name	| varchar(20) | YES |	| NULL	|	|
+| DateofIssue | date	| YES |	| NULL	|	|
+| bname	| varchar(20) | YES |	| NULL	|	|
+| status	| char(1)	| YES |	| NULL	|	|
++-------------+-------------+------+-----+---------+-------+
+5 rows in set (0.001 sec)
+MySQL [pranjal]> insert into Borrower
+values(41,'Pranjal','2024-07-18','aptitude','I'),(61,'Punam','2024-07-3','gate','I'),(59,'harshali','2024 -06-15','reasoning','I');
+
+MySQL [pranjal]> select * from Borrower;
++---------+----------+-------------+-----------+--------+
+| Roll_no | name	| DateofIssue | bname | status |
++---------+----------+-------------+-----------+--------+
+|	41 | Pranjal | 2024-07-18 | aptitude | I	|
+|	61 | Punam	| 2024-07-03 | gate	| I	|
+|	59 | harshali | 2024-06-15 | reasoning | I	|
++---------+----------+-------------+-----------+--------+
+3 rows in set (0.001 sec)
+
+ drop procedure if exists p_fine;
+
+	
+
+	delimiter //
+	create procedure p_fine(IN rno int,IN bname varchar(20))
+		begin
+
+		declare d1 date;
+	->	declare daycnt int;
+	->	declare fine_amt int;
+->
+->
+	->	SELECT DateofIssue into d1 FROM Borrower
+	->	WHERE Roll_no = rno and book= bname;
+->
+	->	select DATEDIFF(now(),d1) into daycnt;
+->
+	->	if(daycnt >= 15 and daycnt <= 30) then
+->
+	->	set fine_amt := daycnt * 5;
+->
+	->	insert into Fine(Roll_no,sDate,Amt) values (rno,now(),fine_amt);
+->
+	->	update Borrower set status = 'R' where Roll_no = rno;
+->
+	->	ELSEIF(daycnt > 30) then
+->
+	->	set fine_amt := daycnt * 50;
+->
+	->	insert into Fine(Roll_no,sDate,Amt) values (rno,now(),fine_amt);
+->
+	->	update Borrower set status = 'R' where Roll_no = rno;
+->
+	->	else
+->
+	->	update Borrower set status = 'R' where Roll_no = rno;
+->
+	->	end if;
+->
+	->	end;
+MySQL [pranjal]>
+MySQL [pranjal]> delimiter ;
+MySQL [pranjal]> alter table Borrower change bname book varchar(20);
+Query OK, 0 rows affected (0.079 sec)
+Records: 0 Duplicates: 0 Warnings: 0
+MySQL [pranjal]> DESC Borrower;
++-------------+-------------+------+-----+---------+-------+
+| Field	| Type	| Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| Roll_no	| int(11)	| YES |	| NULL	|	|
+| name	| varchar(20) | YES |	| NULL	|	|
+| DateofIssue | date	| YES |	| NULL	|	|
+| book	| varchar(20) | YES |	| NULL	|	|
+| status	| char(1)	| YES |	| NULL	|	|
++-------------+-------------+------+-----+---------+-------+
+5 rows in set (0.001 sec)
+MySQL [pranjal]> call p_fine(61,'gate'); Query OK, 1 row affected (0.082 sec)
+MySQL [pranjal]> call p_fine(41,'aptitude'); Query OK, 1 row affected (0.058 sec)
+MySQL [pranjal]> call p_fine(59,'reasoning'); Query OK, 1 row affected (0.147 sec)
+MySQL [pranjal]> select * from Borrower;
++---------+----------+-------------+-----------+--------+
+| Roll_no | name	| DateofIssue | book	| status |
++---------+----------+-------------+-----------+--------+
+|	41 | Pranjal | 2024-07-18 | aptitude | R	|
+|	61 | Punam	| 2024-07-03 | gate	| R	|
+|	59 | harshali | 2024-06-15 | reasoning | R	|
++---------+----------+-------------+-----------+--------+
+3 rows in set (0.001 sec)
+MySQL [pranjal]> select * from Fine;
++---------+------------+------+
+| Roll_no | sDate	| Amt |
++---------+------------+------+
+|	61 | 2024-07-24 | 105 |
+|	59 | 2024-07-24 | 1950 |
++---------+------------+------+
+2 rows in set (0.001 sec)
+MySQL [pranjal]>
+--------------------------------------------------------------------------------------------
+--------------
+
+----------------------------------------------------------------------------
+drop procedure if exists p_fine;
+
+    delimiter //
+
+    create procedure p_fine(IN rno int,IN  bname varchar(20))
+    begin
+
+       declare d1 date;    
+       declare daycnt int;
+       declare fine_amt int;
+
+   
+        SELECT DateofIssue into d1 FROM Borrower
+      WHERE Roll_no = rno and book= bname;
+     
+       select DATEDIFF(now(),d1) into daycnt;
+       
+         if(daycnt >= 15 and daycnt <= 30) then
+         
+               set fine_amt := daycnt * 5;
+           
+                 insert into Fine(Roll_no,sDate,Amt) values (rno,now(),fine_amt);
+                                                   
+                 update Borrower set status = 'R' where Roll_no = rno;
+                 
+       ELSEIF(daycnt > 30) then
+       
+                set fine_amt := daycnt * 50;
+           
+                 insert into Fine(Roll_no,sDate,Amt) values (rno,now(),fine_amt);
+                                                   
+                 update Borrower set status = 'R' where Roll_no = rno;
+                 
+         else
+         
+                          update Borrower set status = 'R' where Roll_no = rno;
+               
+         end if;    
+
+     end;
+//
+
+delimiter ;
